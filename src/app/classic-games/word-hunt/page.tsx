@@ -93,7 +93,7 @@ export default function WordHuntGamePlay() {
             for (let i = 0; i < word.length; i++) {
                 const letter = word[i];
                 const [newX, newY] = incrementPosition(direction, x, y);
-                x = newX, y = newY;
+                var x = newX, y = newY;
                 if (
                     newX < 0 || newY < 0 ||
                     newX >= gridSize || newY >= gridSize ||
@@ -110,7 +110,7 @@ export default function WordHuntGamePlay() {
             for (let i = 0; i < word.length; i++) {
                 const letter = word[i];
                 const [newX, newY] = incrementPosition(direction, x, y);
-                x = newX, y = newY;
+                var x = newX, y = newY;
                 grid[x][y] = letter;
                 position.push([x, y]);
             }

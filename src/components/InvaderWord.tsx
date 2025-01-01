@@ -51,6 +51,7 @@ export default function InvaderWord({
     >
       {word.split("").map((letter, index) => 
         <span 
+          key={index}
           className={`${hitted[index] == letter ? "text-red-500" : "text-yellow-500"}`}
         >
           {letter}

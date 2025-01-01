@@ -9,7 +9,7 @@ import {
 
 export default function MemorizeLayout({ children }: { children: React.ReactNode }) {
     return (
-        <ClassicGame name='memorize' timeLimit={"0.45"}>
+        <ClassicGame name='memorize' timeLimit={"0.60"}>
             <ClassicGameHeader>
                 <ClassicGameTitle title='Memorize'/>
                 <ClassicGameStatus/>
