@@ -28,7 +28,6 @@ export default function InvaderWord({
       var top = 0;
       intervalId = setInterval(() => {
         top = top + 0.1;
-        console.log(Math.floor(top), parentHeight, word)
         if (Math.floor(top) < parentHeight) {
           node.style.top = `${top}rem`
         } else if (Math.floor(top) == parentHeight) {

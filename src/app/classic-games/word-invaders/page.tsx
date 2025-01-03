@@ -12,7 +12,7 @@ import React, { startTransition, useCallback, useEffect, useRef, useState } from
 
 export default function WordInvadersGame() {
 
-  const { highScore, setHighScore, resetTimmer, updateResult, result } = useClassicGame();
+  const { resetTimer, updateResult, result } = useClassicGame();
 
   const totalLives = 4;
   const [ invaders, setInvaders ] = useState<InvaderType[]>([]);
@@ -81,8 +81,11 @@ export default function WordInvadersGame() {
       updatedWords = updatedWords.filter(({ id, word, hitted }) => {
         if (word == hitted.join("")) {
           const newFound = result.found +1;
-          const newResult = { ...result, found: newFound};
-          setHighScore(highScore < newFound ? newFound : highScore);
+          const newResult = { 
+            ...result, 
+            found: newFound,
+            highScore: result.highScore && result.highScore > newFound ? result.highScore : newFound
+          };
           updateResult(newResult)
           return false;
         } 
@@ -95,7 +98,7 @@ export default function WordInvadersGame() {
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown)
     return () => {
-      resetTimmer();
+      resetTimer();
       document.removeEventListener("keydown", handleKeyDown)
     }
   })
@@ -117,7 +120,7 @@ export default function WordInvadersGame() {
     setInvaders([]);
     startInvading();
     setLives(totalLives);
-    resetTimmer();
+    resetTimer();
   }, [])
 
   return (
@@ -156,7 +159,7 @@ export default function WordInvadersGame() {
         <Button onClick={() => handleReset()}>
           Restart
         </Button>
-        <div className="font-semibold text-lg">HIGH SCORE: <span className="font-extrabold">{highScore}</span></div>
+        <div className="font-semibold text-lg">HIGH SCORE: <span className="font-extrabold">{result.highScore}</span></div>
       </div>
     </>
   )

@@ -1,115 +1,123 @@
-'use client'
+'use client';
 
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 type Result = {
-    found: number,
-    won?: boolean,
-    gameOver?: boolean
-}
+  found: number;
+  won?: boolean;
+  gameOver?: boolean;
+  highScore?: number;
+};
+
 interface ClassicContextType {
-    result: Result,
-    timeLimit: string,
-    gameStarted: boolean,
-    highScore: number,
-    setHighScore: (newHighScore: number) => void,
-    updateResult: (newResult: Result) => void,
-    tickTimmer: () => void,
-    resetTimmer: () => void
+  result: Result;
+  timeLimit: string;
+  gameStarted: boolean;
+  updateResult: (newResult: Result) => void;
+  tickTimer: () => void;
+  resetTimer: () => void;
 }
 
-const initialResult = {
-    found: 0,
-    won: false,
-    gameOver: false
-}
-const ClassicGameContext = createContext<ClassicContextType>({
-    result: initialResult,
-    timeLimit: '0.00',
-    highScore: 0,
-    gameStarted: false,
-    setHighScore: () => undefined,
-    updateResult: () => undefined,
-    tickTimmer: () => undefined,
-    resetTimmer: () => undefined
-});
+const initialResult: Result = {
+  found: 0,
+  won: false,
+  gameOver: false,
+  highScore: 0,
+};
 
-export default function ClassicGameProvider({ 
-    id, 
-    children,
-    timeLimit
+const ClassicGameContext = createContext<ClassicContextType | undefined>(undefined);
+
+export default function ClassicGameProvider({
+  id,
+  children,
+  timeLimit,
 }: {
-    id: string,
-    children: React.ReactNode,
-    timeLimit: string
+  id: string;
+  children: React.ReactNode;
+  timeLimit: string;
 }) {
-
-    const [result, setResult] = useState<Result>(initialResult);
-    const [timmer, setTimmer] = useState<string>(timeLimit);
-    const intervalRef = useRef<any>(null!);
-    const gameStarted = timmer !== timeLimit;
-
-    const resetTimmer = () => {
-        setTimmer(timeLimit);
-        clearInterval(intervalRef.current);
-        intervalRef.current = undefined;
+  const [result, setResult] = useState<Result>(() => {
+    if (typeof window !== "undefined") {
+        const storedHighScore = Number(localStorage.getItem('highScore')) || 0;
+        return { ...initialResult, highScore: storedHighScore };
     }
+    return initialResult;
+  });
+  const [timer, setTimer] = useState<string>(timeLimit);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const gameStarted = timer !== timeLimit;
 
-    const tickTimmer = useCallback(() => {
-        if (intervalRef.current) return;
-        intervalRef.current = setInterval((result) => {
-            const { won } = result;
-            if (won) return;
-            setTimmer(prevTimmer => {
-                var newTimmer = Number(prevTimmer) - 0.01; // simple timmer
-                const stringTimmer = newTimmer.toString();
-                const [min, sec] = stringTimmer.split(".");
-                if (sec == "99") newTimmer = Number(`${min}.59`);
-
-                const roundedTime = newTimmer.toFixed(2);
-                if (roundedTime == "0.00") {
-                    resetTimmer();
-                    setResult(prevResult => {
-                        return {...prevResult, gameOver: true};
-                    });
-                }
-                return roundedTime;
-            });
-        }, 1000, result);
-    }, [resetTimmer, setTimmer, setResult, result])
-
-    const updateResult = useCallback((newResult: Result) => {
-        setResult({...result, ...newResult});
-    }, [setResult, result])
-
-    const setHighScore = (newHighScore: number) => {
-        localStorage.setItem("highScore", newHighScore.toString());
+  const resetTimer = useCallback(() => {
+    setTimer(timeLimit);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+  }, [timeLimit]);
 
-    const value = useMemo(() => {
-        return {
-            result,
-            timeLimit: timmer,
-            highScore: Number(localStorage.getItem("highScore")),
-            setHighScore,
-            gameStarted,
-            updateResult,
-            tickTimmer,
-            resetTimmer
+  const tickTimer = useCallback(() => {
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval((result) => {
+        const { won } = result;
+        if (won) return;
+        setTimer(prevTimmer => {
+            var newTimmer = Number(prevTimmer) - 0.01; // simple timmer
+            const stringTimmer = newTimmer.toString();
+            const [min, sec] = stringTimmer.split(".");
+            if (sec == "99") newTimmer = Number(`${min}.59`);
+
+            const roundedTime = newTimmer.toFixed(2);
+            if (roundedTime == "0.00") {
+                resetTimer();
+                setResult(prevResult => {
+                    return {...prevResult, gameOver: true};
+                });
+            }
+            return roundedTime;
+        });
+    }, 1000, result);
+}, [resetTimer, setTimer, setResult, result])
+
+  const updateResult = useCallback(
+    (newResult: Result) => {
+      setResult((prev) => {
+        const updatedResult = { ...prev, ...newResult };
+        if (updatedResult.highScore && updatedResult.highScore > (prev.highScore || 0)
+            && typeof window !== "undefined") {
+          localStorage.setItem('highScore', updatedResult.highScore.toString());
         }
-    }, [result, timmer, gameStarted, localStorage, setHighScore, updateResult, tickTimmer, resetTimmer])
+        return updatedResult;
+      });
+    },
+    [setResult],
+  );
 
-    return (
-        <ClassicGameContext.Provider value={value}>
-            {children}
-        </ClassicGameContext.Provider>
-    )
+  const value = useMemo(
+    () => ({
+      result,
+      timeLimit: timer,
+      gameStarted,
+      updateResult,
+      tickTimer,
+      resetTimer,
+    }),
+    [result, timer, gameStarted, updateResult, tickTimer, resetTimer],
+  );
+
+  return <ClassicGameContext.Provider value={value}>{children}</ClassicGameContext.Provider>;
 }
 
 export const useClassicGame = () => {
-    const newClasicGame = useContext(ClassicGameContext);
-    if (!newClasicGame) {
-        throw Error("We should use useClassicGame within ClassicGameProvider");
-    }
-    return newClasicGame;
-}
+  const context = useContext(ClassicGameContext);
+  if (!context) {
+    throw new Error('useClassicGame must be used within ClassicGameProvider');
+  }
+  return context;
+};

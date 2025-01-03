@@ -34,7 +34,7 @@ export default function WordHuntGamePlay() {
     const [randomWords, setRandomWords] = useState<RandomWordType[]>([]);
     const [charBlocks, setClarBlocks] = useState<string[][]>([]);
     const [currentPosition, setCurrentPosition] = useState<Position>({});
-   const { result, gameStarted, updateResult, tickTimmer, resetTimmer } = useClassicGame();
+   const { result, gameStarted, updateResult, tickTimer, resetTimer } = useClassicGame();
 
     useEffect(() => {
         const randomWords = generatedRandomWords();
@@ -187,7 +187,7 @@ export default function WordHuntGamePlay() {
             start: position,
             end: []
         })
-        tickTimmer();
+        tickTimer();
     }
 
     const handleEndPosition = (position: number[]) => {
@@ -208,7 +208,7 @@ export default function WordHuntGamePlay() {
         const charBlocks = initializeCharsBlocks(randomWords);
         setClarBlocks(charBlocks);
         setCurrentPosition({});
-        resetTimmer();
+        resetTimer();
         updateResult({ found: 0, gameOver: false, won: false })
     }
 

@@ -31,7 +31,7 @@ export default function MemorizeGamePlay() {
         return cards;
     }, []);
     const [ cards, setCards ] = useState<Card[]>(generateInitialCards);
-    const { result, resetTimmer, tickTimmer, updateResult} = useClassicGame();
+    const { result, resetTimer, tickTimer, updateResult} = useClassicGame();
 
     const handleFlipCard = useCallback((cardId: number) => {
         setCards((prevCards) => {
@@ -65,13 +65,13 @@ export default function MemorizeGamePlay() {
             }
             return updatedCards;
         });
-        tickTimmer();
+        tickTimer();
     }, [updateResult, result, setCards]);
 
     const handleReset = () => {
         setCards(generateInitialCards)
         updateResult({ gameOver: false, won: false, found: 0})
-        resetTimmer();
+        resetTimer();
     }
 
     return (
