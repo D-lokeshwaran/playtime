@@ -18,5 +18,6 @@ export type InvaderType = {
     delay: number,
     invaded: boolean,
     hitted: string[]
+    speed: number
 }
   

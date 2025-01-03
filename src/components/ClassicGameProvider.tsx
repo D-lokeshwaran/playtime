@@ -11,6 +11,8 @@ interface ClassicContextType {
     result: Result,
     timeLimit: string,
     gameStarted: boolean,
+    highScore: number,
+    setHighScore: (newHighScore: number) => void,
     updateResult: (newResult: Result) => void,
     tickTimmer: () => void,
     resetTimmer: () => void
@@ -24,7 +26,9 @@ const initialResult = {
 const ClassicGameContext = createContext<ClassicContextType>({
     result: initialResult,
     timeLimit: '0.00',
+    highScore: 0,
     gameStarted: false,
+    setHighScore: () => undefined,
     updateResult: () => undefined,
     tickTimmer: () => undefined,
     resetTimmer: () => undefined
@@ -74,19 +78,26 @@ export default function ClassicGameProvider({
         }, 1000, result);
     }, [resetTimmer, setTimmer, setResult, result])
 
-    const updateResult = (newResult: Result) => {
+    const updateResult = useCallback((newResult: Result) => {
         setResult({...result, ...newResult});
+    }, [setResult, result])
+
+    const setHighScore = (newHighScore: number) => {
+        localStorage.setItem("highScore", newHighScore.toString());
     }
+
     const value = useMemo(() => {
         return {
             result,
             timeLimit: timmer,
+            highScore: Number(localStorage.getItem("highScore")),
+            setHighScore,
             gameStarted,
             updateResult,
             tickTimmer,
             resetTimmer
         }
-    }, [result, timmer, gameStarted, updateResult, tickTimmer, resetTimmer])
+    }, [result, timmer, gameStarted, localStorage, setHighScore, updateResult, tickTimmer, resetTimmer])
 
     return (
         <ClassicGameContext.Provider value={value}>

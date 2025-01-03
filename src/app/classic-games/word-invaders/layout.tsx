@@ -12,7 +12,6 @@ export default function WordInvadersLayout({ children }: { children: React.React
         <ClassicGame name='word-invaders' timeLimit={"0.45"}>
             <ClassicGameHeader className='w-1/2'>
                 <ClassicGameTitle title='Word Invaders'/>
-                <ClassicGameStatus/>
             </ClassicGameHeader>
             <ClassicGameBody>
                 {children}

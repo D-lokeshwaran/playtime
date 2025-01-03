@@ -24,7 +24,7 @@ const FlipCard = ({ card, onFlip }: {
                 </div>
                 <div 
                     className={clsx(
-                        "h-14 w-14 absolute inset-0 h-full w-full rounded-md bg-black/80 text-center text-slate-200 [transform:rotateY(180deg)] [backface-visibility:hidden]", {
+                        "absolute inset-0 h-full w-full rounded-md bg-black/80 text-center text-slate-200 [transform:rotateY(180deg)] [backface-visibility:hidden]", {
                             "bg-yellow-500/60 text-black/80": card.found
                         })}>
                     <div className="flex min-h-full items-center justify-center">

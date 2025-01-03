@@ -48,8 +48,10 @@ function ClassicGameStatus({ found, timmer, className, ...props }: StatusProps) 
     }
     return (
         <div className={`flex justify-between items-center w-full ${className}`} {...props}>
-            <span>found: <b className="font-bold">{found || result.found}</b></span>
-            <span className={`${lessTime && "text-red-500"} font-bold`}>{renderTimmer(leftTime)}</span>
+            <div>FOUND: <span className="font-extrabold">{result.found}</span></div>
+            <span className={`${lessTime && "text-red-500"} font-bold`}>
+                {renderTimmer(leftTime)}
+            </span>
         </div>
     )
 }

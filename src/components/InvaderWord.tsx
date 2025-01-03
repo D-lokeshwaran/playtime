@@ -1,23 +1,18 @@
 'use client'
 
-import { getRandomFloat, getRandomNum } from "@/lib/utils";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { useClassicGame } from "./ClassicGameProvider";
+import { getRandomNum } from "@/lib/utils";
+import React, { useCallback } from "react";
 import { InvaderType } from "@/types/types";
-import clsx from "clsx";
 
 interface InvaderWordProps {
-  word: InvaderType,
-  speed?: number,
+  invader: InvaderType,
   removeWordById: (id: number) => void;
 }
 
 export default function InvaderWord({ 
-    word: { delay, id, invaded, hitted, word}, 
-    speed=400,
+    invader: { delay, id, invaded, hitted, word, speed}, 
     removeWordById
 }: InvaderWordProps) {
-  
   const renderInvaderRef = useCallback((node: HTMLDivElement) => {
     if (!node) return;
     var intervalId: NodeJS.Timeout;
@@ -25,34 +20,39 @@ export default function InvaderWord({
       const parentElement = node.parentElement;
       if (!parentElement) return;
       const { offsetHeight, offsetWidth } = parentElement;
-      const heightInRem = (offsetHeight / 16) -1;
-      const widthInRem = (offsetWidth / 16) -1;
-      const startLeft = getRandomNum(widthInRem - word.length);
+      const parentHeight = (offsetHeight / 16) -1;
+      const parentWidth = (offsetWidth / 16) -1;
+      const startLeft = getRandomNum(parentWidth - word.length);
       node.style.left = `${startLeft}rem`;
   
       var top = 0;
       intervalId = setInterval(() => {
-        top = top + 0.5;
-        if (top < heightInRem) {
+        top = top + 0.1;
+        console.log(Math.floor(top), parentHeight, word)
+        if (Math.floor(top) < parentHeight) {
           node.style.top = `${top}rem`
-        } else {
+        } else if (Math.floor(top) == parentHeight) {
           removeWordById(id)
           clearInterval(intervalId);
           return;
         }
       }, speed)
     }, delay);
-  }, [])
+    return () => {
+      removeWordById(id)
+      clearTimeout(timeoutId);
+    }
+  }, [InvaderWord])
 
   return (
     <div 
-      className="absolute -top-8 font-extrabold text-lg" 
+      className="absolute -top-8 " 
       ref={renderInvaderRef}
     >
       {word.split("").map((letter, index) => 
         <span 
           key={index}
-          className={`${hitted[index] == letter ? "text-red-500" : "text-yellow-500"}`}
+          className={`font-extrabold text-lg ${hitted[index] == letter ? "text-red-500" : "text-yellow-500"}`}
         >
           {letter}
         </span>
