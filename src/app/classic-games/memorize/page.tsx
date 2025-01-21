@@ -10,9 +10,9 @@ import GameOver from '@/components/GameOver';
 
 export default function MemorizeGamePlay() {
 
+    const totalPairs = 20;
     const generateInitialCards = useCallback(() => {
         const iconNames = Object.keys(icons);
-        const totalPairs = 20;
         const selectedCards = Array.from(
             {length: totalPairs},
             () => iconNames[Math.floor(Math.random() * iconNames.length)]
@@ -45,9 +45,17 @@ export default function MemorizeGamePlay() {
                 const [firstCard, secondCard] = currentlyFlipped;
     
                 if (firstCard.icon === secondCard.icon) {
-                    setTimeout(() => 
-                        updateResult({ ...result, found: result.found +1})
-                    , 360);
+                    setTimeout(() => {
+                        const isWon = result.found +1 == totalPairs ? true : false;
+                        updateResult({ 
+                            ...result, 
+                            found: result.found +1, 
+                            won: isWon
+                        })
+                        if (isWon) {
+                            resetTimer();
+                        }
+                    }, 360);
                     return updatedCards.map((card) =>
                         card.icon === firstCard.icon ? { ...card, found: true, flip: false } : card
                     );
@@ -76,7 +84,7 @@ export default function MemorizeGamePlay() {
 
     return (
         <div className='flex flex-col gap-2 items-center'>
-            <div className="flex justify-center flex-wrap gap-2 object-center sm:py-14 w-[30rem]">
+            <div className="flex justify-center flex-wrap gap-2 object-center sm:py-14 w-[32rem]">
                 {cards.map(card => 
                     <FlipCard card={card} key={card.id} onFlip={handleFlipCard}/>
                 )}

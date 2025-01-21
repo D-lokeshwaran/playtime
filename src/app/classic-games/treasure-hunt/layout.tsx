@@ -7,12 +7,11 @@ import {
     ClassicGameTitle 
 } from '@/components/ClassicGame';
 
-export default function EscapeMazeLayout({ children }: { children: React.ReactNode }) {
+export default function TreasureHuntLayout({ children }: { children: React.ReactNode }) {
     return (
-        <ClassicGame name='escape-maze' timeLimit={"0.45"}>
+        <ClassicGame name='treasure-hunt' timeLimit={"0.20"}>
             <ClassicGameHeader>
-                <ClassicGameTitle title='Escape Maze'/>
-                <ClassicGameStatus/>
+                <ClassicGameTitle title='Treasure Hunt'/>
             </ClassicGameHeader>
             <ClassicGameBody>
                 {children}

@@ -11,7 +11,7 @@ export default function Home() {
             <main className="flex gap-4 flex-wrap">
                 <GameNavigateButton name="Memorize the Cards" icon="brain" href="/classic-games/memorize"/>
                 <GameNavigateButton name="Word Hunt" icon="search" href="/classic-games/word-hunt"/>
-                <GameNavigateButton name="Escape the Maze" icon="shell" href="/classic-games/escape-maze"/>
+                <GameNavigateButton name="Hunt the Treasure" icon="shovel" href="/classic-games/treasure-hunt"/>
                 <GameNavigateButton name="Gusses the Word" icon="whole-word" href="/classic-games/word-invaders"/>
             </main>
             <footer>
