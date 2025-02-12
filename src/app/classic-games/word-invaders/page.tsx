@@ -15,6 +15,7 @@ export default function WordInvadersGame() {
   const { resetTimer, updateResult, result } = useClassicGame();
 
   const totalLives = 4;
+  const perLevel = 10;
   const [ invaders, setInvaders ] = useState<InvaderType[]>([]);
   const [ lives, setLives ] = useState<number>(totalLives);
   const invadersCount = useRef<number>(0);
@@ -27,9 +28,9 @@ export default function WordInvadersGame() {
     }
     intervalRef.current = setInterval(() => {
       const invaders = invadersCount.current;
-      const level = invaders / 10;
+      const level = invaders / perLevel;
       const delay = invaders == 0 ? 0 : invaders * getRandomNum(2250, 1200) - (320 * level);
-      const speed = getRandomNum(46, 35) - (6 * level);
+      const speed = getRandomNum(56, 45) - (5 * level);
       const generatedWord = generate({ 
         exactly: 1,
         formatter: (word) => word.toUpperCase(),
@@ -45,7 +46,7 @@ export default function WordInvadersGame() {
       };
       setInvaders(prevInvaders => [...prevInvaders, invader]);
       invadersCount.current++;
-    }, 2250)
+    }, getRandomNum(1500, 1000))
   }
 
   useEffect(() => {
