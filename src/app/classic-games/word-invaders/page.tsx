@@ -61,7 +61,10 @@ export default function WordInvadersGame() {
       updateResult({ ...result, gameOver: true });
       setInvaders([]);
     }
-  }, [lives])
+    if (result.gameOver) {
+      clearInterval(intervalRef.current);
+    }
+  }, [lives, result.gameOver])
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const pressedKey = event.key.toUpperCase();
