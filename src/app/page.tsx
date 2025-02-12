@@ -15,7 +15,8 @@ export default function Home() {
                 <GameNavigateButton name="Type the Word" icon="whole-word" href="/classic-games/word-invaders"/>
             </main>
             <footer>
-                @{new Date().getFullYear()} ProvideFun. Inc, | <Link href="/send-feedback">Send Feedback</Link>
+                @{new Date().getFullYear()} ProvideFun. Inc, | 
+                <Link href="mailto:lokeshwaran.dev@gmail.com">Send Feedback</Link>
             </footer>
         </div>
     );
